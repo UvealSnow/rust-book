@@ -1,0 +1,11 @@
+[package]
+name = "guessing_game"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# This is the version of the rand crate (external library) that we want to use.
+# We could add this using the command `cargo add rand` in the terminal, but we can also add it manually here.
+rand = "0.8.5"
