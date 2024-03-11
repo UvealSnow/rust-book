@@ -51,4 +51,10 @@ fn main() {
     let signed_int_arch: isize = 9223372036854775807; // Depends on the architecture of the computer running the program.
 
     println!("The value of the unsigned integer is: {signed_int_8}");
+
+    let floating_point_32: f32 = 3.123456789; // 32-bit floating point number, max 7 digits, additional digits are rounded.
+    let floating_point_64: f64 = 3.12345678901234567890; // 64-bit floating point number, max 16 digits, additional digits are rounded.
+
+    println!("The value of the floating point number is: {floating_point_32}");
+    println!("The value of the floating point number is: {floating_point_64}");
 }
