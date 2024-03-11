@@ -1,3 +1,5 @@
+use std::mem::size_of;
+
 // Constants are always immutable, they must be anotated and they can be declared in any scope, 
 // including the global scope, they are valid for the entire time a program runs, within the scope they were declared.
 const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
@@ -57,4 +59,9 @@ fn main() {
 
     println!("The value of the floating point number is: {floating_point_32}");
     println!("The value of the floating point number is: {floating_point_64}");
+
+    // Boolean type in Rust:
+    let t: bool = true; // this is trivially inferred by the compiler.
+    // Boolean types are one byte in size.
+    println!("bools: {}, u8s: {}", size_of::<[bool; 8]>(), size_of::<[u8; 8]>());
 }
