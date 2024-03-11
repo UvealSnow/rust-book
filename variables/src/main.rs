@@ -1,6 +1,6 @@
 fn main() {
-    let x = 5;
+    let mut x = 5;
     println!("The value of x is: {}", x);
-    x = 6; // This will throw an error, because x is immutable by default.
+    x = 6;
     println!("The value of x is: {}", x);
 }
