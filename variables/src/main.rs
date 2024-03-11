@@ -64,4 +64,12 @@ fn main() {
     let t: bool = true; // this is trivially inferred by the compiler.
     // Boolean types are one byte in size.
     println!("bools: {}, u8s: {}", size_of::<[bool; 8]>(), size_of::<[u8; 8]>());
+
+    // Character type in Rust:
+    let c: char = 'z'; // 4 bytes in size, represents a Unicode Scalar Value, which means it can represent a lot more than just ASCII.
+    println!("The value of the character is: {c}");
+    let taco_emoji: char = '🌮';
+    println!("The value of the taco emoji is: {taco_emoji}");
+    let korean_char: char = '안';
+    println!("The value of the Korean character is: {korean_char}");
 }
