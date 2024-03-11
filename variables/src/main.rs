@@ -30,4 +30,25 @@ fn main() {
     // let guess = "42".parse().expect("Not a number!");
     let guess: u32 = "42".parse()
         .expect("Not a number!");
+
+    // Integer types in Rust:
+    let unsigned_int_8: u8 = b'a'; // 0 to 255; = 97
+    let unsigned_int_16: u16 = 65535; // 0 to 65535
+    let unsigned_int_32: u32 = 4294967295; // 0 to 4294967295
+    let unsigned_int_64: u64 = 18446744073709551615; // 0 to 18446744073709551615
+    let unsigned_int_128: u128 = 340282366920938463463374607431768211455; // 0 to 340282366920938463463374607431768211455
+    let unsigned_int_arch: usize = 18446744073709551615; // Depends on the architecture of the computer running the program.
+
+    println!("The value of the unsigned integer is: {unsigned_int_8}");
+
+    // Numbers can use a _ as a visual separator, for example 1_000 is the same as 1000.
+    // We can also use any integer literals in Rust, such as 0x for hexadecimal, 0o for octal, and 0b for binary.
+    let signed_int_8: i8 = -0x0f; // -128 to 127; = -15
+    let signed_int_16: i16 = 32_767; // -32768 to 32767
+    let signed_int_32: i32 = 2_147_483_647; // -2147483648 to 2147483647
+    let signed_int_64: i64 = 9_223_372_036_854_775_807; // -9223372036854775808 to 9223372036854775807
+    let signed_int_128: i128 = 0x7F_FFF_FFF_FFF_FFF_FFF_FFF_FFF_FFF_FFF_FFF; // -170141183460469231731687303715884105728 to 170141183460469231731687303715884105727
+    let signed_int_arch: isize = 9223372036854775807; // Depends on the architecture of the computer running the program.
+
+    println!("The value of the unsigned integer is: {signed_int_8}");
 }
