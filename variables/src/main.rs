@@ -24,4 +24,10 @@ fn main() {
 
     // The inner scope has ended, and the original y is now in scope.
     println!("The value of y is: {y}");
+
+    // Rust needs to know the type of all variables at compile time, the type can be inferred from the value, or it can be explicitly annotated.
+    // If we don't annotate the type, the compiler will try infer the type from the value. In this case, the compiler throws and error, because it can't infer the type.
+    // let guess = "42".parse().expect("Not a number!");
+    let guess: u32 = "42".parse()
+        .expect("Not a number!");
 }
