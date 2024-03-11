@@ -66,10 +66,22 @@ fn main() {
     println!("bools: {}, u8s: {}", size_of::<[bool; 8]>(), size_of::<[u8; 8]>());
 
     // Character type in Rust:
-    let c: char = 'z'; // 4 bytes in size, represents a Unicode Scalar Value, which means it can represent a lot more than just ASCII.
+    // 4 bytes in size, represents a Unicode Scalar Value, which means it can represent a lot more than just ASCII.
+    // they are specified with single quotes, as opposed to double quotes for strings.
+    let c: char = 'z'; 
     println!("The value of the character is: {c}");
     let taco_emoji: char = '🌮';
     println!("The value of the taco emoji is: {taco_emoji}");
     let korean_char: char = '안';
     println!("The value of the Korean character is: {korean_char}");
+
+    // Compound types in Rust:
+    // Tuple type in Rust:
+    // A tuple is a general way of grouping together a number of values with a variety of types into one compound type.
+    // A tuple without any values is called a unit, and is a type and a value of its own, witten as (), repesents an empty return type.
+    let rocket_emoji: char = '\u{1F680}';
+    let tup: (i32, f64, u8, char) = (500, 6.4, 1, rocket_emoji); 
+    let (x, y, z, r) = tup; // Destructuring a tuple.
+    let rocket = tup.3; // Accessing a tuple element by index.
+    println!("The value of y is: {y} {r}");
 }
