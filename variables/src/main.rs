@@ -1,4 +1,5 @@
 use std::mem::size_of;
+use rand::Rng;
 
 // Constants are always immutable, they must be anotated and they can be declared in any scope, 
 // including the global scope, they are valid for the entire time a program runs, within the scope they were declared.
@@ -84,4 +85,18 @@ fn main() {
     let (x, y, z, r) = tup; // Destructuring a tuple.
     let rocket = tup.3; // Accessing a tuple element by index.
     println!("The value of y is: {y} {r}");
+
+    // Array type in Rust:
+    // An array is a collection of multiple values of the same type, and has a fixed length.
+    // Arrays are useful when you want your data allocated on the stack rather than the heap.
+    // To annotate the type of an array, we use square brackets, and the type of the elements, followed by a semicolon and the number of elements in the array.
+    let a: [i8; 5] = [1, 2, 3, 4, 5];
+    let mut rand_arr: [u32; 100] = [0; 100]; // An array of a hundred 0's.
+
+    // We can do this because we're sending a slice, notice the [..] as the argument. 
+    // This slice is a reference to the entire array.
+    rand::thread_rng().fill(&mut rand_arr[..]);
+
+    // Access an array element by index. If you try to access an index that is out of bounds, the program will panic.
+    println!("The value of the first element in the random array is: {}, {}", rand_arr[0], rand_arr[1]);
 }
