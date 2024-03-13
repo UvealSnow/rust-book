@@ -31,18 +31,18 @@ fn main() {
 
     // Don't use 0..=12 or it will go oob
     for day in 0..12 {
-        println!("On the {} day of Christmas,\nmy true love gave to me:", days[day]);
+        let mut lyrics = format!("On the {} day of Christmas,\nmy true love gave to me:\n", days[day]);
         match day {
-            0 => println!("{}.", gifts[0]),
+            0 => lyrics.push_str(&format!("{}.", gifts[0])),
             _ => {
                 for n in (0..=day).rev() {
                     match n == 0 {
-                        true => println!("And {}.", gifts[n].to_lowercase()),
-                        false => println!("{},", gifts[n]),
+                        true => lyrics.push_str(&format!("And {}.", gifts[n].to_lowercase())),
+                        false => lyrics.push_str(&format!("{},\n", gifts[n])),
                     }
                 }
             }
         }
-        println!("\n");
+        println!("{lyrics}\n");
     }
 }
