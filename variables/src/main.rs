@@ -99,4 +99,35 @@ fn main() {
 
     // Access an array element by index. If you try to access an index that is out of bounds, the program will panic.
     println!("The value of the first element in the random array is: {}, {}", rand_arr[0], rand_arr[1]);
+
+    a_new_function();
+    function_with_parameters(unsigned_int_32);
+    let y = expression_example();
+    println!("The value of y is: {y}");
+    let p_one = plus_one(5);
+    println!("The value of p_one is: {p_one}");
+    let _test = plus_one;
+    let text_p_one = _test(665);
+    println!("The value of text_p_one is: {text_p_one}");
+}
+
+// As a default, function names are snake case, and the parameters are annotated with their types.
+// Rust does not care where we define the function, as long as it is defined somewhere.
+fn a_new_function() {
+    println!("This is a new function!");
+}
+
+fn function_with_parameters(x: u32) {
+    println!("The value of x is: {x}");
+}
+
+fn expression_example() -> u8 {
+    let x = 3;
+    // The last line of a function is an expression, if you add the semicolon, it becomes a statement.
+    // Expressions return a value, and statements do not.
+    x + 1
+}
+
+fn plus_one(x: i32) -> i32 {
+    x + 1
 }
