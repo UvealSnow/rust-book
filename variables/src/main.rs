@@ -109,6 +109,78 @@ fn main() {
     let _test = plus_one;
     let text_p_one = _test(665);
     println!("The value of text_p_one is: {text_p_one}");
+
+    // Control flow in Rust:
+    // Conditionals MUST be boolean, if you try to use a non-boolean value, the compiler will throw an error.
+    let number = _test(5);
+    if number > 5 {
+        println!("The value of p_one is greater than 5!");
+    } else if number == 5 {
+        println!("The value of p_one is equal to 5!");
+    } else {
+        println!("The value of p_one is less than or equal to 5!");
+    }
+
+    // Using if in a let statement:
+    // The results of both arms of the if must be the same type.
+    let condition = true;
+    let number = if condition { 5 } else { 6 };
+    println!("The value of number is: {number}");
+
+    // Loops in Rust:
+    // Rust has three kinds of loops: loop, while, and for.
+    let mut i = 0;
+    let res = loop {
+        i += 1;
+        if i == 2 {
+            // Skip the rest of the iteration.
+            continue;
+        } else if i == 10 {
+            // Exit the loop.
+            break i * 2;
+        } else {
+            println!("The value of i is: {i}");
+        }
+    };
+
+    println!("The value resulting of the loop is: {res}");
+
+    let mut j = 0;
+    // we can use labels to specify a particular loop that we want to break or continue.
+    // Otherwise, the break or continue will apply to the innermost loop.
+    'outer: loop {
+        println!("The value of j is: {j}");
+        j += 1;
+        let mut k = 0;
+        'inner: loop {
+            println!("The value of k is: {k}");
+            k += 1;
+            if k == 5 {
+                break 'inner;
+            }
+        }
+        if j == 5 {
+            break 'outer;
+        }
+    }
+
+    let mut k = 5;
+    while k != 0 {
+        println!("The value of k in while loop is: {k}");
+        k -= 1;
+    }
+
+    // We can use a for loop to iterate over a collection, such as an array.
+    let arr = [10, 20, 30, 40, 50];
+    for element in arr {
+        println!("The value of element in for loop is: {element}");
+    }
+
+    // We can use a for loop to iterate over a range of numbers.
+    // Ranges are a type provided by the standard library, and they are notated with two dots.
+    for number in (1..4).rev() {
+        println!("The value of number in for loop is: {number}");
+    }
 }
 
 // As a default, function names are snake case, and the parameters are annotated with their types.
