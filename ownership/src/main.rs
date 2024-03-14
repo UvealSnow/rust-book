@@ -44,4 +44,37 @@ fn main() {
     // value goes out of scope and we add the Copy annotation to that type, we’ll get a compile-time error.
     let copy = str.clone();
     println!("{}\n{}", str, copy);
+
+    // This function takes ownership of the copy variable, once print_str is out of scope, so will copy.
+    print_str(copy);
+
+    // u32 implements the 'Copy' trait, meaning it can be trivially copied. It's still usable after print_int goes oos.
+    print_int(x);
+
+    let mine = gives_ownership();
+    let mine = takes_and_gives(mine);
+
+    println!("{}", mine);
+
+    // The ownership of a variable follows the same pattern every time: assigning a value to another variable moves it. 
+    // When a variable that includes data on the heap goes out of scope, the value will be cleaned up by drop unless
+    // ownership of the data has been moved to another variable.
+}
+
+fn print_str(str: String) {
+    println!("{}", str);
+} // Once we get here, str goes oos and 'drop' is called. The memory is freed.
+
+fn print_int(int: u32) {
+    println!("{}", int);
+} // int goes oos here, it goes out with the stack, but since it was a copy it still exists in main.
+
+// This function will move ownership of the returned String to the caller.
+fn gives_ownership() -> String {
+    String::from("your string")
+}
+
+// This function takes a String and retuns it to the caller.
+fn takes_and_gives(str: String) -> String {
+    str
 }
