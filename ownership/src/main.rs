@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 fn main() {
     // Ownership rules in Rust:
     // - Each value in Rust has an owner.
@@ -154,4 +156,181 @@ fn takes_and_gives(str: String) -> String {
 // Borrows a refference to the String
 fn calculate_length(s: &String) -> usize {
     s.len()
+}
+
+// Fixing ownership errors
+
+// The following code has a simple ownership issue, the data it borrows from goes oos before the reference.
+// fn buggy_return_a_string() -> &String {
+//     let s = String::from("Hello");
+//     &s
+// }
+
+// One way to fix it is by returning the value itself
+fn return_a_string_value() -> String {
+    String::from("Hello")
+}
+
+// We could also return a string literal stored in the stack instead of the heap
+fn return_a_string_ref() -> &'static str {
+    "Hello"
+}
+
+// We can also use a Reference Counted (Rc) pointer, Rc::clone only copies the reference, not the data.
+// At runtime Rc checks for the last reference to the data and then dealocates it.
+fn return_a_rc_string() -> Rc<String> {
+    let s = Rc::new(String::from("Hello"));
+    Rc::clone(&s)
+}
+
+// The consumer could also just send us a place to store our String. Making the caller responsible of
+// memora allocation.
+fn return_string_to_slot(out: &mut String) {
+    out.replace_range(.., "Hello")
+}
+
+// The following code is missing runtime permissions
+// fn stringify_name_with_title(name: &Vec<String>) -> String {
+//     name.push(String::from("Esq."));
+//     let full = name.join(" ");
+//     full
+// }
+
+// We could just pass a mutable reference, but this is not a good solution as functions shoulf NOT modify
+// their inputs when the caller is not expecting it.
+fn stringify_mutable_name_with_title(name: &mut Vec<String>) -> String {
+    name.push(String::from("Esq."));
+    let full = name.join(" ");
+    full
+}
+
+// We could take ownership of the name Vector, but this is also not great as functions should try not to take
+// ownership of heap-owning data structures, also name will be unusable after the call.
+fn stringify_my_name_with_title(mut name: Vec<String>) -> String {
+    name.push(String::from("Esq."));
+    let full = name.join(" ");
+    full
+}
+
+// Using a mutable reference is the best way then, we should copy it to avoid changing the original
+// In this case, we copy the name by using slice.join()
+fn stringify_copied_name_with_title(name: &mut Vec<String>) -> String {
+    let mut full = name.join(" ");
+    full.push_str(" Esq.");
+    full
+}
+
+// The following code fails because dst does not have W permissions due to it being referenced by largest.
+// fn add_big_strings(dst: &mut Vec<String>, src: &[String]) {
+//     let largest: &String = dst.iter().max_by_key(|s| s.len()).unwrap();
+//     for s in src {
+//         if s.len() > largest.len() {
+//             dst.push(s.clone());
+//         }
+//     }
+// }
+
+// We can remove the dst reference altogether by using the length, since we don't need the contents of the String
+// This is a performant and idiomatic solution, as we're not copying values from the stack and we shorten the lifetime
+// of borrows so it can be modified.
+fn add_big_strings(dst: &mut Vec<String>, src: &[String]) {
+    let largest_len = dst.iter().max_by_key(|s| s.len())
+        .unwrap()
+        .len();
+
+    for s in src {
+        if s.len() > largest_len {
+            dst.push(s.clone());
+        }
+    }
+}
+
+fn confusing_stack_and_heap() {
+    // This code is fine because we're using primitive values that don't own data in the heap
+    let v = vec![1, 2, 3];
+    let v_ref: &i32 = &v[0];
+    let n = *v_ref;
+
+    // This code is not safe bc String owns data in the heap that cannot be copied without moving.
+    // When s goes oos, the String it's pointing to is dealocated, v_ref and v think they own the non-existent
+    // String at this point, then v_ref goes oos and tries to dealocate the String.
+    let v = vec![String::from("Hello world")];
+    let v_ref: &String = &v[0];
+    // let s: String = *v_ref;                         // cannot move out of `*v_ref` which is behind a shared reference
+
+    // As an exception, to follow anti-aliasingg policy, an immutable reference cannot be used after it's reasigned 
+    // let mut n = 0;
+    // let a = &mut n;
+    // let b = a;                                      // a is no longer valid from this point
+
+    // There are many ways to make that code safe:
+    // 1. Avoid taking ownership of the vector
+    let v = vec![String::from("Hello world")];
+    let s_ref = &v[0];
+    println!("{s_ref}");
+
+    // 2. Clone the data
+    let v = vec![String::from("Hello world")];
+    let mut s = v[0].clone();
+    s.push('!');
+    println!("{s}");
+    
+    // 3. Take the data out of the vectror
+    let mut v: Vec<String> = vec![String::from("Hello world")];
+    let mut s = v.remove(0);
+    s.push('!');
+    println!("{s}");
+}
+
+fn fixing_safe_code_1() {
+    // The borrow checker has limitations, this code is completely safe as we're just using a reference to 
+    // a single path of the tuple, in fact if we do this inline it works fine. But when we use closures or functions
+    // it looses track of the fine grained permissions as it will not check the output of the function, it'll just assume
+    // the whole tuple is referenced as there's no way for it to know which of the two Strings is being referenced.
+    fn get_first(tuple: &(String, String)) -> &String {
+        &tuple.0
+    }
+
+    let mut name = (
+        String::from("Ferris"),
+        String::from("Rustacean"),
+    );
+
+    let first = get_first(&name);
+
+    // name.1.push_str(" Esq.");               // cannot borrow `name.1` as mutable because it is also borrowed as immutable
+    println!("{first} {}", name.1);
+}
+
+fn fixing_safe_code_2() {
+    // This code fails because Rust will not check every path for the array a, assumes that if we allowed x to make a single-ref
+    // on a, then all paths of a are mutable references, so the 
+    let mut a = [0, 1, 2, 3];
+    let x = &mut a[2];
+    // let y = &a[2];                      // cannot borrow `a[_]` as immutable because it is also borrowed as mutable
+    // *x += *y;
+
+    // We could use slice::split_at_mut that implements unsafe blocks to do their work, we can do the same.
+    let (a_l, a_r) = a.split_at_mut(2);
+    let x = &mut a_l[0];
+    let y = &a_r[0];
+    *x += *y;
+
+    // We must be careful using unsafe blocks
+    let x = &mut a[0] as *mut i32;
+    let y = &a[2] as *const i32;
+    unsafe { // Defeats the purpose of using Rust unless you KNOW your code is safe.
+        *x += *y;
+    } 
+    // Unsafe code is sometimes necessary to work around the limitations of the borrow checker.
+    // unsafe code is heavily used in the std library, it's how Rust implements certain otherwise-impossible patterns.
+}
+
+fn point() {
+    let mut point = [0, 1];
+    let mut x = point[0];
+    let y = &mut point[1];
+    x += 1;
+    *y += 1;
+    println!("{} {}", point[0], point[1]);
 }
