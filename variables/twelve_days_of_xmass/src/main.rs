@@ -29,20 +29,20 @@ fn main() {
         "Twelve drummers drumming",
     ];
 
-    // Don't use 0..=12 or it will go oob
+    let mut previous_gifts = String::new();
+
+    // Time: O(n), Space O(n)
     for day in 0..12 {
-        let mut lyrics = format!("On the {} day of Christmas,\nmy true love gave to me:\n", days[day]);
-        match day {
-            0 => lyrics.push_str(&format!("{}.", gifts[0])),
-            _ => {
-                for n in (0..=day).rev() {
-                    match n == 0 {
-                        true => lyrics.push_str(&format!("And {}.", gifts[n].to_lowercase())),
-                        false => lyrics.push_str(&format!("{},\n", gifts[n])),
-                    }
-                }
-            }
+        let gifts = match day {
+            0 => format!("{}.\n", gifts[day]),
+            1 => format!("{},\nAnd {}.\n", gifts[day], gifts[0].to_lowercase()),
+            _ => format!("{},\n{}", gifts[day], previous_gifts).to_string(),
+        };
+
+        println!("On the {} day of Christmas,\nmy true love gave to me:\n{}", days[day], gifts);
+        
+        if day > 0 {
+            previous_gifts = gifts;
         }
-        println!("{lyrics}\n");
     }
 }
